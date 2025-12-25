@@ -2,9 +2,11 @@
 
 An intelligent internal assistant specialized in Defence and Automotive Radar engineering. Built for Zoppler Systems engineering teams.
 
+**Now running 100% locally with Ollama - No API keys, no internet required!**
+
 ![Python](https://img.shields.io/badge/python-3.11+-blue.svg)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-green.svg)
-![Claude](https://img.shields.io/badge/Claude-3.5%20Sonnet-purple.svg)
+![Ollama](https://img.shields.io/badge/Ollama-Local%20LLM-green.svg)
 ![License](https://img.shields.io/badge/license-Internal-red.svg)
 
 ## 🚀 Features
@@ -29,12 +31,48 @@ An intelligent internal assistant specialized in Defence and Automotive Radar en
 ## 📋 Prerequisites
 
 - **Python 3.11+**
-- **Anthropic API Key** (Claude 3.5 Sonnet)
+- **Ollama** (for running local LLM models)
 - **Docker** (optional, for containerized deployment)
+- **8GB+ RAM recommended** (16GB+ for larger models)
 
 ## 🛠️ Installation
 
-### Option 1: Local Setup (Recommended for Development)
+### Step 1: Install Ollama
+
+**On Linux:**
+```bash
+curl -fsSL https://ollama.com/install.sh | sh
+```
+
+**On macOS:**
+```bash
+brew install ollama
+```
+
+**On Windows:**
+Download and install from [ollama.com/download](https://ollama.com/download)
+
+### Step 2: Pull a Model
+
+Start Ollama and download a model (recommended: llama3.2 for good balance of speed and quality):
+
+```bash
+# Start Ollama service (if not auto-started)
+ollama serve
+
+# In another terminal, pull a model
+ollama pull llama3.2
+
+# Alternative models you can try:
+# ollama pull llama3.1      # Larger, more capable
+# ollama pull mistral       # Fast and efficient
+# ollama pull codellama     # Optimized for code
+# ollama pull phi3          # Smaller, faster (2GB)
+```
+
+### Step 3: Set Up the Application
+
+**Option A: Local Setup (Recommended for Development)**
 
 1. **Clone the repository**
    ```bash
@@ -56,7 +94,8 @@ An intelligent internal assistant specialized in Defence and Automotive Radar en
 4. **Configure environment**
    ```bash
    cp .env.example .env
-   # Edit .env and add your ANTHROPIC_API_KEY
+   # Edit .env to customize Ollama settings (optional)
+   # Default values work if Ollama is running locally
    ```
 
 5. **Run the application**
@@ -67,41 +106,47 @@ An intelligent internal assistant specialized in Defence and Automotive Radar en
 6. **Access the chatbot**
    Open your browser to: **http://localhost:8000**
 
-### Option 2: Docker Deployment (Recommended for Production)
+**Option B: Docker Deployment (For Production)**
 
-1. **Clone and configure**
+1. **Ensure Ollama is running on host**
+   ```bash
+   ollama serve
+   ```
+
+2. **Clone and configure**
    ```bash
    git clone <repository-url>
    cd zoppler-radar-ai
    cp .env.example .env
-   # Edit .env and add your ANTHROPIC_API_KEY
+   # Edit .env if needed (defaults work for local setup)
    ```
 
-2. **Build and run with Docker Compose**
+3. **Update docker-compose.yml** to use host network or link to Ollama
+
+4. **Build and run**
    ```bash
    docker-compose up -d
    ```
 
-3. **Access the chatbot**
+5. **Access the chatbot**
    Open your browser to: **http://localhost:8000**
 
-4. **View logs**
-   ```bash
-   docker-compose logs -f
-   ```
+## 🤖 Choosing a Model
 
-5. **Stop the service**
-   ```bash
-   docker-compose down
-   ```
+Different models offer different trade-offs:
 
-## 🔑 Getting an Anthropic API Key
+| Model | Size | Speed | Quality | Best For |
+|-------|------|-------|---------|----------|
+| **phi3** | 2GB | ⚡⚡⚡ | ⭐⭐⭐ | Quick responses, limited RAM |
+| **llama3.2** | 7GB | ⚡⚡ | ⭐⭐⭐⭐ | **Recommended balance** |
+| **mistral** | 7GB | ⚡⚡ | ⭐⭐⭐⭐ | Fast and capable |
+| **llama3.1** | 42GB | ⚡ | ⭐⭐⭐⭐⭐ | Best quality, needs GPU |
+| **codellama** | 7GB | ⚡⚡ | ⭐⭐⭐⭐ | Code-focused tasks |
 
-1. Visit [Anthropic Console](https://console.anthropic.com/)
-2. Sign up or log in
-3. Navigate to API Keys section
-4. Create a new API key
-5. Copy the key to your `.env` file
+Change model in `.env`:
+```bash
+OLLAMA_MODEL=llama3.2  # or mistral, phi3, etc.
+```
 
 ## 📁 Project Structure
 
@@ -178,10 +223,16 @@ Edit the `SYSTEM_PROMPT` variable in `app.py` to adjust the AI's behavior, exper
 
 ### Change AI Model
 
-Update the model parameter in `app.py`:
-```python
-model="claude-3-5-sonnet-20241022"  # Current
-# model="claude-3-opus-20240229"    # Alternative
+Update the model in your `.env` file:
+```bash
+OLLAMA_MODEL=llama3.2  # Current
+# OLLAMA_MODEL=mistral  # Alternative
+# OLLAMA_MODEL=phi3     # Smaller/faster
+```
+
+Make sure to pull the new model first:
+```bash
+ollama pull mistral
 ```
 
 ### Adjust Styling
@@ -222,23 +273,35 @@ Clears conversation history (frontend-only, no backend persistence)
 
 ## 🚦 Troubleshooting
 
-### "ANTHROPIC_API_KEY not configured"
-- Ensure `.env` file exists and contains valid API key
-- Restart the application after updating `.env`
+### "Cannot connect to Ollama"
+- Ensure Ollama is running: `ollama serve`
+- Check Ollama is accessible: `curl http://localhost:11434/api/version`
+- Verify OLLAMA_HOST in `.env` matches your Ollama installation
+
+### "Model not found"
+- Pull the model first: `ollama pull llama3.2`
+- Verify model name: `ollama list`
+- Update OLLAMA_MODEL in `.env` to match available model
 
 ### Port 8000 already in use
 - Change port in `.env`: `PORT=8080`
 - Or stop the conflicting service
 
-### Docker container won't start
-- Check Docker logs: `docker-compose logs`
-- Verify `.env` file is present
-- Ensure API key is valid
-
 ### Slow responses
-- Check API rate limits on Anthropic Console
-- Verify network connectivity
-- Consider upgrading API tier for higher limits
+- Try a smaller/faster model: `ollama pull phi3`
+- Ensure enough RAM available (8GB+ recommended)
+- Consider using GPU acceleration if available
+- Close other memory-intensive applications
+
+### Out of memory errors
+- Use a smaller model like `phi3` or `mistral`
+- Close other applications
+- Increase system swap space
+
+### Response quality issues
+- Try a larger model: `ollama pull llama3.1`
+- Adjust temperature and other parameters in code
+- Ensure model is fully downloaded: `ollama pull <model> --verbose`
 
 ## 🔄 Development Workflow
 
@@ -315,4 +378,12 @@ Future enhancements under consideration:
 
 **Built with ❤️ for Zoppler Systems Engineering Teams**
 
-*Powered by Claude 3.5 Sonnet | FastAPI | Modern Web Technologies*
+*Powered by Local LLMs via Ollama | FastAPI | Modern Web Technologies*
+
+## 🌟 Benefits of Local LLM
+
+- **🔒 Complete Privacy**: All data stays on your machine
+- **💰 Zero API Costs**: No usage fees or rate limits
+- **🚀 No Internet Required**: Works offline
+- **⚡ Fast Responses**: No network latency
+- **🎯 Full Control**: Choose and customize your model
