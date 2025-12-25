@@ -1,20 +1,41 @@
 #!/bin/bash
 
-# Zoppler Radar AI - Quick Start Script
+# Zoppler Radar AI - Quick Start Script (Local LLM)
 
-echo "🎯 Zoppler Radar AI - Starting..."
+echo "🎯 Zoppler Radar AI - Starting (Local LLM)..."
 echo ""
+
+# Check if Ollama is installed
+if ! command -v ollama &> /dev/null; then
+    echo "⚠️  Ollama not found. Please install Ollama first:"
+    echo "   curl -fsSL https://ollama.com/install.sh | sh"
+    echo ""
+    exit 1
+fi
+
+# Check if Ollama is running
+if ! curl -s http://localhost:11434/api/version &> /dev/null; then
+    echo "⚠️  Ollama is not running. Starting Ollama..."
+    echo "   Please ensure 'ollama serve' is running in another terminal"
+    echo ""
+    read -p "Press Enter after starting Ollama..."
+fi
+
+# Check if a model is installed
+if ! ollama list | grep -q llama; then
+    echo "⚠️  No models found. Pulling llama3.2..."
+    echo "   This may take a few minutes (7GB download)..."
+    ollama pull llama3.2
+    echo "✅ Model downloaded"
+fi
 
 # Check if .env exists
 if [ ! -f .env ]; then
     echo "⚠️  No .env file found. Creating from template..."
     cp .env.example .env
     echo "✅ Created .env file"
+    echo "   (Using default Ollama configuration)"
     echo ""
-    echo "⚠️  IMPORTANT: Please edit .env and add your ANTHROPIC_API_KEY"
-    echo "   Get your API key from: https://console.anthropic.com/"
-    echo ""
-    read -p "Press Enter after you've added your API key to .env..."
 fi
 
 # Check if virtual environment exists

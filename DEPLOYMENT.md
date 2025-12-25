@@ -46,7 +46,7 @@ cd /opt/zoppler-radar-ai
 
 # Configure environment
 cp .env.example .env
-nano .env  # Add ANTHROPIC_API_KEY
+nano .env  # Configure Ollama settings (defaults work for local setup)
 
 # Start services
 docker-compose up -d
@@ -129,11 +129,10 @@ spec:
         ports:
         - containerPort: 8000
         env:
-        - name: ANTHROPIC_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: zoppler-secrets
-              key: anthropic-api-key
+        - name: OLLAMA_HOST
+          value: "http://ollama-service:11434"
+        - name: OLLAMA_MODEL
+          value: "llama3.2"
         resources:
           requests:
             memory: "512Mi"
@@ -174,10 +173,9 @@ spec:
 # Create namespace
 kubectl create namespace production
 
-# Create secret
-kubectl create secret generic zoppler-secrets \
-  --from-literal=anthropic-api-key=YOUR_API_KEY \
-  -n production
+# Note: Ensure Ollama is deployed separately or accessible from cluster
+# Option 1: Deploy Ollama as a service in the cluster
+# Option 2: Use external Ollama instance (set OLLAMA_HOST)
 
 # Deploy
 kubectl apply -f deployment.yaml

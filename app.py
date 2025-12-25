@@ -1,6 +1,7 @@
 """
 Zoppler Radar AI Chatbot - Backend API
 A specialized AI assistant for Defence and Automotive Radar engineering
+Using Local LLM via Ollama
 """
 
 from fastapi import FastAPI, HTTPException
@@ -9,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, StreamingResponse
 from pydantic import BaseModel
 from typing import List, Optional
-import anthropic
+import httpx
 import os
 from datetime import datetime
 import json
@@ -89,37 +90,63 @@ async def health_check():
 async def chat(request: ChatRequest):
     """
     Main chat endpoint - handles both streaming and non-streaming responses
+    Uses local Ollama LLM
     """
     try:
-        # Check for API key
-        api_key = os.getenv("ANTHROPIC_API_KEY")
-        if not api_key:
-            raise HTTPException(
-                status_code=500,
-                detail="ANTHROPIC_API_KEY not configured. Please set your API key in .env file."
-            )
-
-        client = anthropic.Anthropic(api_key=api_key)
-
-        # Convert messages to Anthropic format
+        # Get Ollama configuration
+        ollama_host = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+        ollama_model = os.getenv("OLLAMA_MODEL", "llama3.2")
+        
+        # Convert messages to Ollama format
+        # Ollama expects system prompt as part of the messages or separate
         messages = [
             {"role": msg.role, "content": msg.content}
             for msg in request.messages
+        ]
+        
+        # Add system prompt at the beginning
+        full_messages = [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            *messages
         ]
 
         if request.stream:
             # Streaming response
             async def generate():
                 try:
-                    with client.messages.stream(
-                        model="claude-3-5-sonnet-20241022",
-                        max_tokens=4096,
-                        system=SYSTEM_PROMPT,
-                        messages=messages,
-                    ) as stream:
-                        for text in stream.text_stream:
-                            yield f"data: {json.dumps({'text': text})}\n\n"
+                    async with httpx.AsyncClient(timeout=120.0) as client:
+                        async with client.stream(
+                            "POST",
+                            f"{ollama_host}/api/chat",
+                            json={
+                                "model": ollama_model,
+                                "messages": full_messages,
+                                "stream": True
+                            }
+                        ) as response:
+                            if response.status_code != 200:
+                                error_text = await response.aread()
+                                yield f"data: {json.dumps({'error': f'Ollama error: {error_text.decode()}'})}\n\n"
+                                return
+                            
+                            async for line in response.aiter_lines():
+                                if line.strip():
+                                    try:
+                                        data = json.loads(line)
+                                        if "message" in data and "content" in data["message"]:
+                                            content = data["message"]["content"]
+                                            if content:
+                                                yield f"data: {json.dumps({'text': content})}\n\n"
+                                        
+                                        # Check if done
+                                        if data.get("done", False):
+                                            break
+                                    except json.JSONDecodeError:
+                                        continue
+                    
                     yield "data: [DONE]\n\n"
+                except httpx.ConnectError:
+                    yield f"data: {json.dumps({'error': 'Cannot connect to Ollama. Make sure Ollama is running at ' + ollama_host})}\n\n"
                 except Exception as e:
                     yield f"data: {json.dumps({'error': str(e)})}\n\n"
 
@@ -129,28 +156,39 @@ async def chat(request: ChatRequest):
             )
         else:
             # Non-streaming response
-            message = client.messages.create(
-                model="claude-3-5-sonnet-20241022",
-                max_tokens=4096,
-                system=SYSTEM_PROMPT,
-                messages=messages,
-            )
+            async with httpx.AsyncClient(timeout=120.0) as client:
+                try:
+                    response = await client.post(
+                        f"{ollama_host}/api/chat",
+                        json={
+                            "model": ollama_model,
+                            "messages": full_messages,
+                            "stream": False
+                        }
+                    )
+                    
+                    if response.status_code != 200:
+                        raise HTTPException(
+                            status_code=response.status_code,
+                            detail=f"Ollama error: {response.text}"
+                        )
+                    
+                    data = response.json()
+                    response_text = data.get("message", {}).get("content", "")
+                    
+                    return ChatResponse(
+                        response=response_text,
+                        timestamp=datetime.now().isoformat()
+                    )
+                    
+                except httpx.ConnectError:
+                    raise HTTPException(
+                        status_code=503,
+                        detail=f"Cannot connect to Ollama at {ollama_host}. Make sure Ollama is running."
+                    )
 
-            return ChatResponse(
-                response=message.content[0].text,
-                timestamp=datetime.now().isoformat()
-            )
-
-    except anthropic.AuthenticationError:
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid API key. Please check your ANTHROPIC_API_KEY."
-        )
-    except anthropic.RateLimitError:
-        raise HTTPException(
-            status_code=429,
-            detail="Rate limit exceeded. Please try again later."
-        )
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

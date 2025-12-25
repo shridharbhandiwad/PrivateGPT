@@ -2,7 +2,7 @@
 
 ## Overview
 
-**Zoppler Radar AI** is a specialized internal chatbot built for Zoppler Systems engineering teams, providing expert assistance in Defence and Automotive Radar engineering. The application features a modern web interface powered by Claude 3.5 Sonnet AI with real-time streaming responses.
+**Zoppler Radar AI** is a specialized internal chatbot built for Zoppler Systems engineering teams, providing expert assistance in Defence and Automotive Radar engineering. The application features a modern web interface powered by **local LLM via Ollama** with real-time streaming responses - 100% private and offline capable.
 
 ## What's Been Built
 
@@ -19,7 +19,7 @@
 
 | File | Purpose |
 |------|---------|
-| `requirements.txt` | Python dependencies (FastAPI, Anthropic, Uvicorn) |
+| `requirements.txt` | Python dependencies (FastAPI, httpx, Uvicorn) |
 | `.env.example` | Environment variable template |
 | `.gitignore` | Git exclusions for secrets and build files |
 | `Dockerfile` | Production-ready containerization |
@@ -74,7 +74,8 @@
 ### Backend
 - **Python 3.11+**: Modern Python with type hints
 - **FastAPI 0.115**: High-performance async web framework
-- **Anthropic SDK**: Claude 3.5 Sonnet integration
+- **Ollama**: Local LLM serving (llama3.2, mistral, phi3, etc.)
+- **httpx**: Async HTTP client for Ollama API
 - **Uvicorn**: ASGI server with HTTP/2 support
 - **Pydantic**: Data validation and serialization
 
@@ -343,7 +344,7 @@ zoppler-radar-ai/
 
 **Built for Zoppler Systems Engineering Excellence** 🎯
 
-*Powered by Claude 3.5 Sonnet | FastAPI | Modern Web Technologies*
+*Powered by Local LLM (Ollama) | FastAPI | Modern Web Technologies | 100% Private & Offline*
 
 **Project Status**: ✅ Complete and Ready for Deployment
 

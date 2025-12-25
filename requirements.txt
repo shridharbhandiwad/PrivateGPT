@@ -1,11 +1,12 @@
 # Zoppler Radar AI - Python Dependencies
+# Local LLM via Ollama
 
 # Web Framework
 fastapi==0.115.6
 uvicorn[standard]==0.34.0
 
-# AI/ML
-anthropic==0.39.0
+# HTTP Client for Ollama API
+httpx==0.27.2
 
 # Data Validation
 pydantic==2.10.5
