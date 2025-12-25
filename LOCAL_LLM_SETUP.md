@@ -134,9 +134,27 @@ Ollama automatically uses GPU if available:
 - Supported on Linux
 - See Ollama documentation for setup
 
+## Verify Your Setup
+
+Before starting, verify everything is configured correctly:
+
+**Linux/macOS:**
+```bash
+./verify_setup.sh
+```
+
+**Windows:**
+```cmd
+verify_setup.bat
+```
+
 ## Troubleshooting
 
-### "Cannot connect to Ollama"
+For comprehensive troubleshooting help, see **[OLLAMA_TROUBLESHOOTING.md](OLLAMA_TROUBLESHOOTING.md)**
+
+### Quick Solutions
+
+**"Cannot connect to Ollama"**
 ```bash
 # Check if Ollama is running
 curl http://localhost:11434/api/version
@@ -145,7 +163,7 @@ curl http://localhost:11434/api/version
 ollama serve
 ```
 
-### Slow Responses
+**Slow Responses**
 ```bash
 # Try smaller model
 ollama pull phi3
@@ -154,7 +172,7 @@ ollama pull phi3
 OLLAMA_MODEL=phi3
 ```
 
-### Out of Memory
+**Out of Memory**
 ```bash
 # Use smallest model
 ollama pull phi3
@@ -163,7 +181,7 @@ ollama pull phi3
 # Check memory: free -h (Linux) or Activity Monitor (Mac)
 ```
 
-### Model Not Found
+**Model Not Found**
 ```bash
 # List available models
 ollama list
@@ -174,6 +192,8 @@ ollama pull llama3.2
 # Verify it's downloaded
 ollama list
 ```
+
+For detailed platform-specific help and advanced troubleshooting, see [OLLAMA_TROUBLESHOOTING.md](OLLAMA_TROUBLESHOOTING.md)
 
 ## Advanced Configuration
 

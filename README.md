@@ -271,37 +271,61 @@ Main chat endpoint supporting streaming responses
 ### `POST /api/clear`
 Clears conversation history (frontend-only, no backend persistence)
 
+## 🔍 Verify Your Setup
+
+Before starting the application, run the verification script to check if everything is configured correctly:
+
+**On Linux/macOS:**
+```bash
+./verify_setup.sh
+```
+
+**On Windows:**
+```cmd
+verify_setup.bat
+```
+
+This will check:
+- Python installation
+- Ollama installation and service status
+- Available models
+- Configuration files
+- System resources
+- Port availability
+
 ## 🚦 Troubleshooting
 
-### "Cannot connect to Ollama"
-- Ensure Ollama is running: `ollama serve`
-- Check Ollama is accessible: `curl http://localhost:11434/api/version`
-- Verify OLLAMA_HOST in `.env` matches your Ollama installation
+For detailed troubleshooting help, see **[OLLAMA_TROUBLESHOOTING.md](OLLAMA_TROUBLESHOOTING.md)** which covers:
+- Installation issues (Windows/macOS/Linux)
+- Connection problems
+- Model download issues
+- Performance optimization
+- Platform-specific solutions
 
-### "Model not found"
-- Pull the model first: `ollama pull llama3.2`
-- Verify model name: `ollama list`
-- Update OLLAMA_MODEL in `.env` to match available model
+### Quick Fixes
 
-### Port 8000 already in use
-- Change port in `.env`: `PORT=8080`
-- Or stop the conflicting service
+**"Cannot connect to Ollama"**
+```bash
+# Start Ollama service
+ollama serve
+```
 
-### Slow responses
-- Try a smaller/faster model: `ollama pull phi3`
-- Ensure enough RAM available (8GB+ recommended)
-- Consider using GPU acceleration if available
-- Close other memory-intensive applications
+**"Model not found"**
+```bash
+# Download recommended model
+ollama pull llama3.2
+```
 
-### Out of memory errors
-- Use a smaller model like `phi3` or `mistral`
-- Close other applications
-- Increase system swap space
+**"Port 8000 already in use"**
+- Edit `.env` and change: `PORT=8080`
 
-### Response quality issues
-- Try a larger model: `ollama pull llama3.1`
-- Adjust temperature and other parameters in code
-- Ensure model is fully downloaded: `ollama pull <model> --verbose`
+**Slow responses**
+```bash
+# Use smaller/faster model
+ollama pull phi3
+```
+
+For more help, run the verification script or check the [troubleshooting guide](OLLAMA_TROUBLESHOOTING.md).
 
 ## 🔄 Development Workflow
 
