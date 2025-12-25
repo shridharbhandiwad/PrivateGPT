@@ -1,0 +1,86 @@
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║        🎯 ZOPPLER RADAR AI - SINGLE COMMAND TO RUN          ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+
+┌──────────────────────────────────────────────────────────────┐
+│  SIMPLEST METHOD (RECOMMENDED)                               │
+└──────────────────────────────────────────────────────────────┘
+
+    Just type:
+
+        ./launch
+
+    That's it! Everything is automated! ✨
+
+
+┌──────────────────────────────────────────────────────────────┐
+│  ALTERNATIVE METHODS                                         │
+└──────────────────────────────────────────────────────────────┘
+
+    Option 1 (Most Robust):     ./run.sh
+    Option 2 (Original):        ./start.sh
+    Option 3 (Windows):         start.bat
+    Option 4 (Docker):          docker-compose up
+
+
+┌──────────────────────────────────────────────────────────────┐
+│  FIRST TIME SETUP                                            │
+└──────────────────────────────────────────────────────────────┘
+
+    1. Make executable:    chmod +x launch run.sh start.sh
+    2. Run:               ./launch
+    3. Wait 5-10 min      (downloads AI model first time)
+    4. Open browser:      http://localhost:8000
+
+
+┌──────────────────────────────────────────────────────────────┐
+│  WHAT GETS INSTALLED AUTOMATICALLY                           │
+└──────────────────────────────────────────────────────────────┘
+
+    ✅ Ollama (Local LLM runtime)
+    ✅ AI Model (llama3.2 - 7GB)
+    ✅ Python virtual environment
+    ✅ FastAPI and dependencies
+    ✅ All configuration files
+
+
+┌──────────────────────────────────────────────────────────────┐
+│  TIME REQUIRED                                               │
+└──────────────────────────────────────────────────────────────┘
+
+    First Run:        5-10 minutes
+    Every Other Run:  3-5 seconds ⚡
+
+
+┌──────────────────────────────────────────────────────────────┐
+│  TROUBLESHOOTING                                             │
+└──────────────────────────────────────────────────────────────┘
+
+    Problem:               Solution:
+    ───────────────────   ─────────────────────────────────
+    Permission denied     chmod +x launch
+    Port in use          Edit .env, change PORT=8080
+    Ollama error         Run: ollama serve (in new terminal)
+    Model missing        Run: ollama pull llama3.2
+
+
+┌──────────────────────────────────────────────────────────────┐
+│  DOCUMENTATION                                               │
+└──────────────────────────────────────────────────────────────┘
+
+    📄 START_HERE.md     - Quick start guide
+    📄 QUICK_RUN.md      - Simple instructions
+    📄 RUN_OPTIONS.md    - All run methods explained
+    📄 README.md         - Complete documentation
+
+
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║  🚀 READY TO GO! Just run: ./launch                         ║
+║                                                              ║
+║  Access at: http://localhost:8000                           ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
