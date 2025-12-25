@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoppler Radar AI - Internal Assistant</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <svg class="radar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 2 L12 12 L17 7"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    <h1>Zoppler Radar AI</h1>
+                </div>
+                <div class="header-subtitle">
+                    Senior Radar Systems Architect Assistant
+                </div>
+            </div>
+        </header>
+
+        <!-- Specialty Tags -->
+        <div class="specialty-tags">
+            <span class="tag">Defence Radar</span>
+            <span class="tag">Automotive Radar</span>
+            <span class="tag">Signal Processing</span>
+            <span class="tag">ML/AI</span>
+            <span class="tag">Radar Software</span>
+        </div>
+
+        <!-- Chat Container -->
+        <div class="chat-container" id="chatContainer">
+            <div class="welcome-message">
+                <h2>Welcome to Zoppler Radar AI</h2>
+                <p>I'm your internal expert assistant specializing in Defence and Automotive Radar engineering.</p>
+                <div class="capabilities">
+                    <div class="capability">
+                        <strong>🎯 Radar Fundamentals</strong>
+                        <span>FMCW, Pulse, AESA, range–Doppler–angle</span>
+                    </div>
+                    <div class="capability">
+                        <strong>🛡️ Defence Systems</strong>
+                        <span>Surveillance, tracking, ISAR/SAR, ECCM, C2</span>
+                    </div>
+                    <div class="capability">
+                        <strong>🚗 Automotive Radar</strong>
+                        <span>24/77 GHz, ADAS, tracking, sensor fusion</span>
+                    </div>
+                    <div class="capability">
+                        <strong>📊 Signal Processing</strong>
+                        <span>FFT, CFAR, beamforming, Kalman filters</span>
+                    </div>
+                    <div class="capability">
+                        <strong>🤖 Machine Learning</strong>
+                        <span>Target classification, GNN/LSTM/CNN</span>
+                    </div>
+                    <div class="capability">
+                        <strong>💻 Software & Systems</strong>
+                        <span>C/C++, Python, Qt, ROS, microservices</span>
+                    </div>
+                </div>
+                <p class="security-note">🔒 All conversations are confidential. I provide engineering guidance only.</p>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-container">
+            <div class="input-wrapper">
+                <textarea 
+                    id="messageInput" 
+                    placeholder="Ask me about radar systems, signal processing, or engineering challenges..."
+                    rows="1"
+                ></textarea>
+                <button id="sendButton" class="send-button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="input-footer">
+                <button id="clearButton" class="clear-button">Clear Conversation</button>
+                <span class="model-info">Powered by Claude 3.5 Sonnet</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div class="loading-indicator" id="loadingIndicator" style="display: none;">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

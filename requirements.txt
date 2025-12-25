@@ -1,0 +1,19 @@
+# Zoppler Radar AI - Python Dependencies
+
+# Web Framework
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+
+# AI/ML
+anthropic==0.39.0
+
+# Data Validation
+pydantic==2.10.5
+
+# Environment Management
+python-dotenv==1.0.1
+
+# Optional: Development tools
+# pytest==8.3.4
+# black==24.10.0
+# ruff==0.8.5
