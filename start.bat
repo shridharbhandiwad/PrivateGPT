@@ -57,7 +57,8 @@ if %ERRORLEVEL% NEQ 0 (
 
 REM Check if a model is installed
 echo 🔍 Checking for available models...
-ollama list | findstr /C:"llama" >nul 2>nul
+ollama list > "%TEMP%\ollama_models.txt" 2>nul
+findstr /C:"llama" "%TEMP%\ollama_models.txt" >nul 2>nul
 if %ERRORLEVEL% NEQ 0 (
     echo ⚠️  No Llama models found. Pulling llama3.2...
     echo    This may take a few minutes (~7GB download)...
@@ -78,6 +79,7 @@ if %ERRORLEVEL% NEQ 0 (
     echo ✅ Llama model found
     echo.
 )
+del "%TEMP%\ollama_models.txt" >nul 2>nul
 
 REM Check if .env exists
 if not exist .env (
